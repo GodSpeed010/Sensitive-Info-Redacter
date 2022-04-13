@@ -7,13 +7,16 @@ import re
 import sys
 
 current_dir = os.getcwd()
+project_abs_path = os.path.dirname(__file__)
+
 CUSTOMER_NAME = 'Bob'
+
 
 def generate_email(received_contents):  # receiving a dictionary
     default = '-'
 
     email_template_path = Path(
-        current_dir + "/Project/templates/email_template.html"
+        os.path.join(project_abs_path, "templates/email_template.html")
     )
 
     logger.info(f'email template path is {email_template_path}')
@@ -38,8 +41,8 @@ def generate_email(received_contents):  # receiving a dictionary
 
     return html
 
-def search_customer_files():
-    customer_dir = current_dir + '/Project/test_data/'
+
+def search_customer_files(customer_dir=os.getcwd()):
 
     # dictionary of sensitive info types mapped to a list containing regex matches for that type
     # multiple regex matches are provided in some cases for higher accuracy
@@ -66,7 +69,13 @@ def search_customer_files():
         'ipv6_address': [r'\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}'],
     }
 
-    filenames = os.listdir(customer_dir)
+    #get list of ONLY files, no folders
+    filenames = list(filter(
+        lambda file_or_folder: os.path.isfile(
+            os.path.join(customer_dir, file_or_folder)
+        ),
+        os.listdir(customer_dir)
+    ))
 
     # iterating over files in customer_dir
     for file_name in filenames:
@@ -109,5 +118,19 @@ def send_sensitive_data_email(leaked_info, sensitive_file):
 
     send_email(body=body, subject=subject, files=[])
 
+
 if __name__ == '__main__':
-    search_customer_files()
+    # if arguments were passed via terminal
+    if len(sys.argv) > 1:
+        # relative path to directory to search that user passed as argument
+        relative_search_dir = sys.argv[1]
+
+        # absolute path for the above relative path
+        abs_search_dir = os.path.join(os.getcwd(), relative_search_dir)
+
+        search_customer_files(customer_dir=abs_search_dir)
+
+    else:
+        search_customer_files()
+
+    print('Done')
