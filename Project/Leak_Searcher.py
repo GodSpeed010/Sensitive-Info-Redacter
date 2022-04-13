@@ -32,7 +32,7 @@ class Leak_Searcher:
         self.__current_dir = current_dir
 
     def scan_dir_files(self, dir):
-        customer_dir = self.__current_dir + dir  # '/Project/test_data/'
+        customer_dir = os.path.join(self.__current_dir, dir)  # '/Project/test_data/'
 
         # dictionary of sensitive info types mapped to a list containing regex matches for that type
         # multiple regex matches are provided in some cases for higher accuracy
@@ -59,7 +59,14 @@ class Leak_Searcher:
             'ipv6_address': [r'\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}'],
         }
 
-        filenames = os.listdir(customer_dir)
+        #get list of ONLY files, no folders
+        filenames = list(filter(
+            lambda file_or_folder: os.path.isfile(
+                os.path.join(customer_dir, file_or_folder)
+            ),
+            os.listdir(customer_dir)
+        ))
+        
         # iterating over files in customer_dir
         for file_name in filenames:
             with open(os.path.join(customer_dir, file_name), 'r') as file:
@@ -147,7 +154,9 @@ class Leak_Searcher:
         default = '-'
 
         email_template_path = Path(
-            current_dir + "/Project/templates/email_template.html"
+            os.path.join(
+            current_dir, "Project/templates/email_template.html"
+            )
         )
 
         logger.info(f'email template path is {email_template_path}')

@@ -14,7 +14,7 @@ There are 2 ways to use this script.
 
 ## Option 1. Use the Leak_Searcher Class
 This method allows you to use Python code to create a leak_searcher object and pass it information such as the relative directory you want to search, sender & receiver emails, and more. <br/>
-Next, you can call `scan_dir_files('/foo/')` on the object to scan all files in the passed directory for sensitive info. See **sandbox.py** for example code.
+Next, you can call `scan_dir_files('foo/')` on the object to scan all files in the passed directory for sensitive info. See **sandbox.py** for example code.
 
 ## Option 2. Call the script from the terminal.
 1. Add the "**Project**" directory to your PATH environment variables.

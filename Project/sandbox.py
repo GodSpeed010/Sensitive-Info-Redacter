@@ -9,6 +9,6 @@ leak_searcher = Leak_Searcher(
 )
 
 #relative path of the intended dir to scan
-search_dir_rel_path = '/Project/test_data/'
+search_dir_rel_path = 'Project/test_data/'
 
 leak_searcher.scan_dir_files(search_dir_rel_path)
