@@ -71,28 +71,30 @@ class Leak_Searcher:
         for file_name in filenames:
             with open(os.path.join(customer_dir, file_name), 'r') as file:
                 file_str = file.read()
+                file_redacted = file_str[:]  # copy the file string
 
                 # iterate through all keys in regex_matches dictionary ('ssn', 'email', etc..)
                 for info_type in regex_matches:
                     # iterate through all regex_matches for the info_type in the dictionary
                     for info_type_match in regex_matches[info_type]:
-                        # todo replace with find or match; don't need to find all matches, just know if it exists
-                        matches = re.findall(info_type_match, file_str)
+                        # tries replacing sensitive info using regex
+                        replacement_operation = re.subn(
+                            info_type_match, 'REDACTED', file_redacted
+                        )
+                        # the file string after having sensitive info replaced
+                        file_redacted = replacement_operation[0]
+                        replacements_made = replacement_operation[1]
 
-                        # if there are any matches
-                        if len(matches) > 0:
-
-                            # print the type of info_match along with all the matches
-                            print(
-                                info_type,
-                                matches,
-                                sep=' '
-                            )
-
+                        if replacements_made:
                             self.send_sensitive_data_email(info_type, file_name)
 
-                            # break out of for loop. No need to find more matches. Goal is to inform user that it exists, not how many there are
-                            break
+                # if sensitive info was found, the strings will be different
+                if file_str != file_redacted:
+                    # save the redacted text to a new file
+                    with open(f'{file_name}_REDACTED', 'w') as redacted_info_file:
+                        print(f'writing {file_redacted} to new file')
+                        redacted_info_file.write(file_redacted)
+
 
     def send_email(self, subject, body, files):
         to_emails = self.__receiver_email.split(',') + self.__cc_emails.split(',')

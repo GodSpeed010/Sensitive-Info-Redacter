@@ -30,3 +30,7 @@ Or you can pass a relative path to a directory as an argument, and the script wi
 ```
 C:\Users\Foo\Documents> generate_email.py foo/bar/
 ```
+
+## Improvements That Could Be Made
+* Time complexity of the regex replacement. Currently, the entire file is scanned for every regex operation. This could be improved by reading the file line by line.
+* **Leak_Searcher.py** and **generate_email.py** have duplicated code. Improving the code in one file means it also has to be copied to the other.
