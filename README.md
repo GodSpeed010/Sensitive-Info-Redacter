@@ -19,11 +19,14 @@ Next, you can call `scan_dir_files('/foo/')` on the object to scan all files in 
 ## Option 2. Call the script from the terminal.
 1. Add the "**Project**" directory to your PATH environment variables.
 
-You can call the script without arguments. This runs it on the current working directory.
+You can run the script without arguments. This runs it on the current working directory. The following command runs the script in **C:\Users\Foo\Documents\\**.
 ```
-generate_email.py
+C:\Users\Foo\Documents> generate_email.py
 ```
-Or you can pass a relative path to a directory as an argument, and the script will run on the passed directory
+
+<br/>
+
+Or you can pass a relative path to a directory as an argument, and the script will run on the passed directory. The following command runs the script in **C:\Users\Foo\Documents\foo\bar\\**.
 ```
-generate_email.py foo/bar/
+C:\Users\Foo\Documents> generate_email.py foo/bar/
 ```
