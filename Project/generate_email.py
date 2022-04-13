@@ -4,12 +4,19 @@ from pathlib import Path
 import os
 from send_email import send_email
 import re
+import sys
 
 current_dir = os.getcwd()
-
+CUSTOMER_NAME = 'Bob'
 
 def generate_email(received_contents):  # receiving a dictionary
     default = '-'
+
+    email_template_path = Path(
+        current_dir + "/Project/templates/email_template.html"
+    )
+
+    logger.info(f'email template path is {email_template_path}')
 
     expected_content = dict.fromkeys(
         ['customer_name', 'leaked_info', 'mssg', 'sensitive_file'], default)
@@ -20,11 +27,6 @@ def generate_email(received_contents):  # receiving a dictionary
         else:
             logger.warning(
                 f"The value for {content} was not passed to write failure email. Default value {default} will be used")
-
-        email_template_path = Path(
-            current_dir + "/Project/templates/email_template.html")
-
-        logger.info(f'email template path is {email_template_path}')
 
         if email_template_path.exists() and email_template_path.is_file():
             with open(str(email_template_path), 'r') as message:
@@ -42,12 +44,15 @@ def search_customer_files():
     # dictionary of sensitive info types mapped to a list containing regex matches for that type
     # multiple regex matches are provided in some cases for higher accuracy
     regex_matches = {
-        'ssn': [r'(?!000|.+0{4})(?:\d{9}|\d{3}-\d{2}-\d{4})'],
+        'ssn': [
+            r'(?!000|.+0{4})(?:\d{9}|\d{3}-\d{2}-\d{4})',
+            r'[0-9]{3}-[0-9]{2}-[0-9]{4}'
+        ],
         'email': [
             r'([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})',
             r'[\w\.=-]+@[\w\.-]+\.[\w]{2,3}'
         ],
-        'phone': [r'\d{3}-\d{3}-\d{4}'],
+        'phone_number': [r'\d{3}-\d{3}-\d{4}'],
         'credit_card': [
             # mastercard
             r'(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}',
@@ -62,50 +67,47 @@ def search_customer_files():
     }
 
     filenames = os.listdir(customer_dir)
+
     # iterating over files in customer_dir
     for file_name in filenames:
-        # if file is .csv
-        if file_name.endswith('.csv'):
-            continue  # todo
-        # handle as text file
-        else:
-            with open(os.path.join(customer_dir, file_name), 'r') as file:
-                file_str = file.read()
+        with open(os.path.join(customer_dir, file_name), 'r') as file:
+            file_str = file.read()
 
-                # iterate through all keys in regex_matches dictionary
-                for info_type in regex_matches:
-                    # iterate through all regex_matches for the info_type in the dictionary
-                    for info_type_match in regex_matches[info_type]:
-                        matches = re.findall(info_type_match, file_str) # todo replace with find or match; don't need to find all matches, just know if it exists
+            # iterate through all keys in regex_matches dictionary ('ssn', 'email', etc..)
+            for info_type in regex_matches:
+                # iterate through all regex_matches for the info_type in the dictionary
+                for info_type_match in regex_matches[info_type]:
+                    # todo replace with find or match; don't need to find all matches, just know if it exists
+                    matches = re.findall(info_type_match, file_str)
 
-                        # if there are any matches
-                        if len(matches) > 0:
+                    # if there are any matches
+                    if len(matches) > 0:
 
-                            # print the type of info_match along with all the matches
-                            print(
-                                info_type,
-                                re.findall(info_type_match, file_str),
-                                sep=' '
-                            )
+                        # print the type of info_match along with all the matches
+                        print(
+                            info_type,
+                            matches,
+                            sep=' '
+                        )
 
-                            # send_sensitive_data_email('bob', info_type, file_name)
+                        send_sensitive_data_email(info_type, file_name)
 
-                            break
+                        # break out of for loop. No need to find more matches. Goal is to inform user that it exists, not how many of that type there are
+                        break
 
 # sends an email to customer telling what type of sensitive data was found and what file it was found in
-def send_sensitive_data_email(cust_name, leaked_info, sensitive_file):
+def send_sensitive_data_email(leaked_info, sensitive_file):
     mssg = "Please remove your sensitive info from the file as soon as possible."
     subject = 'WARNING! Sensitive Info. Leaked'
     email_contents = {
-        "customer_name": cust_name,
+        "customer_name": CUSTOMER_NAME,
         "leaked_info": leaked_info,
         "mssg": mssg,
         "sensitive_file": sensitive_file
     }
     body = generate_email(email_contents)
 
-    print(body)
-    # send_email(body=body, subject=subject, files=[])
+    send_email(body=body, subject=subject, files=[])
 
 if __name__ == '__main__':
     search_customer_files()
