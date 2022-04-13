@@ -17,7 +17,7 @@ This method allows you to use Python code to create a leak_searcher object and p
 Next, you can call `scan_dir_files('foo/')` on the object to scan all files in the passed directory for sensitive info. See **sandbox.py** for example code.
 
 ## Option 2. Call the script from the terminal.
-1. Add the "**Project**" directory to your PATH environment variables.
+1. Add the "**Project**" directory to your PATH environment variables. [Here's](https://correlated.kayako.com/article/40-running-python-scripts-from-anywhere-under-windows) a great tutorial for Windows users.
 
 You can run the script without arguments. This runs it on the current working directory. The following command runs the script in **C:\Users\Foo\Documents\\**.
 ```
@@ -33,4 +33,4 @@ C:\Users\Foo\Documents> generate_email.py foo/bar/
 
 ## Improvements That Could Be Made
 * Time complexity of the regex replacement. Currently, the entire file is scanned for every regex operation. This could be improved by reading the file line by line.
-* **Leak_Searcher.py** and **generate_email.py** have duplicated code. Improving the code in one file means it also has to be copied to the other.
+* **Leak_Searcher.py** and **generate_email.py** have duplicated code. Improving the code in one file means it also has to be copied to the other. It would be better to have one codebase that is shared between the two projects.
