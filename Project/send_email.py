@@ -8,8 +8,6 @@ CC_EMAILS = ''
 MY_PASSWORD = 'password'
 
 # Send email with specific subject, message, and files ass attachments being optional
-
-
 def send_email(subject, body, files):
     import smtplib
     from smtplib import SMTPException

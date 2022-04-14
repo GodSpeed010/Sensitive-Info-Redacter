@@ -92,7 +92,7 @@ class Leak_Searcher:
                 if file_str != file_redacted:
                     # save the redacted text to a new file
                     with open(f'{file_name}_REDACTED', 'w') as redacted_info_file:
-                        print(f'writing {file_redacted} to new file')
+                        # print(f'writing {file_redacted} to new file')
                         redacted_info_file.write(file_redacted)
 
 
@@ -140,7 +140,7 @@ class Leak_Searcher:
                 f'Unable to send email. Failed to send from {self.__sender_email} to {"".join(to_emails) }.')
 
     def send_sensitive_data_email(self, leaked_info, sensitive_file):
-        mssg = "Please remove your sensitive info from the file as soon as possible."
+        mssg = "A copy of your file has been made with redacted sensitive information. Please review the file and remove any remaining sensitive information as soon as possible."
         subject = 'WARNING! Sensitive Info. Leaked'
         email_contents = {
             "customer_name": self.__receiver_name,
