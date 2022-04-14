@@ -101,7 +101,7 @@ def search_customer_files(customer_dir=os.getcwd()):
             # if sensitive info was found, the strings will be different
             if file_str != file_redacted:
                 # save the redacted text to a new file
-                with open(f'{file_name}_REDACTED', 'w') as redacted_info_file:
+                with open(f'{customer_dir}{file_name}_REDACTED', 'w') as redacted_info_file:
                     # print(f'writing {file_redacted} to new file')
                     redacted_info_file.write(file_redacted)
 

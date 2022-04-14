@@ -4,7 +4,7 @@ Project 1 for Headstarter Accelerate
 
 ## Description
 
-This project is a script that runs over a directory of files scanning for sensitive data. If any sensitive data is found, it will send an email to the configured user alerting them which type of data was found.
+This project is a script that runs over a directory of files scanning for sensitive data. If any sensitive data is found, it will create a copy of the document, redacting the sensitive info. It will also send an email to the configured user alerting them which type of sensitive data was found.
 
 ## Getting Started
 
