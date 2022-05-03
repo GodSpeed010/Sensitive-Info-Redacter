@@ -1,4 +1,4 @@
-# Project Title
+# Sensitive Info Redacter
 
 Project 1 for Headstarter Accelerate
 
